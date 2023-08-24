@@ -1,6 +1,9 @@
 import os.path
 import xlsxwriter
 import argparse
+import pandas
+import webbrowser
+import os
 
 def check_file_existence(fname):
     if not os.path.isfile(fname):
@@ -31,7 +34,12 @@ def create_excel_file(data, f_name):
     workbook = xlsxwriter.Workbook(f_name)
     worksheet = workbook.add_worksheet()
     
-    bold_yellow_bg = workbook.add_format({'bold': True, 'bg_color': 'yellow'})
+    bold_yellow_bg = workbook.add_format({
+        'bold': True,
+        'bg_color': 'yellow',
+        'align': 'center',
+        'valign': 'vcenter'
+        })
     green_bg = workbook.add_format({'bg_color': 'green'})
     for i in range(4):
         worksheet.set_column(i, i, 15)  # Column 0 (A) width set to 15
@@ -61,6 +69,16 @@ def get_args():
     filter_ = args.filter
     return [input_file, output_file, filter_]
 
+def convert_to_website(filename):
+    x = pandas.read_excel(filename)
+    table = x.to_html(index=False)
+    html_filename = 'index.html'
+    with open(html_filename, 'w') as html:
+        html.write(table)
+    current_dir = os.getcwd()
+    quest = input('Do you wanna see the website?:')
+    if quest.lower() == 'yes':
+        webbrowser.open(current_dir + '/index.html')
 
 def main():
     args = get_args()
@@ -72,4 +90,5 @@ def main():
     lst = create_list_of_dct(data)
     sorted_lst = sort_lst(lst, filter_by_what)
     create_excel_file(sorted_lst, excel_file)
+    convert_to_website(excel_file)
 main()
