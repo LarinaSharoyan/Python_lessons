@@ -129,10 +129,14 @@ def friend():
             return "It's a tie"
 
 def main():
-    if play_with() == 'computer':
+    mode = play_with()
+    if mode == "computer":
         print(computer())
-    elif play_with() == 'friend':
+    elif mode == 'friend':
         print(friend())
+    else:
+        print("No such mode for this game")
 
+        
 
 main()
