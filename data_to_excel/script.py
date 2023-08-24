@@ -1,23 +1,34 @@
-import os.path
-import xlsxwriter
+"""
+    argparse is for arguments when we run program
+    webbrowser to open index.html
+    os is to find index.html location
+    sys is just for sys.exit()
+    xlsxwriter to create an excel file and write data in it
+    pandas is to convert excel to html
+"""
 import argparse
-import pandas
 import webbrowser
 import os
+import sys
+import xlsxwriter
+import pandas
 
 def check_file_existence(fname):
+    """ Checks file exists or not"""
     if not os.path.isfile(fname):
-        print("Your files does not exists: %s. Please check" %fname)
-        exit()
+        print(f"Your file does not exists: {fname}. Please check")
+        sys.exit()
 
-def open_data(file):
-    with open(file) as f:
-        return f.readlines()
+def open_data(filename):
+    """Opens data.txt and returns all lines in list"""
+    with open(filename, encoding='utf-8') as file:
+        return file.readlines()
     file.close()
 
-def create_list_of_dct(f):
+def create_list_of_dct(filename):
+    """Gets that list and creates a list of dictionaries"""
     lst = []
-    for i in f:
+    for i in filename:
         line = i.strip().split()
         dct = {}
         dct['name'] = line[0]
@@ -27,13 +38,14 @@ def create_list_of_dct(f):
         lst.append(dct)
     return lst
 
-def sort_lst(lst, filter):
-    return sorted(lst, key=lambda x: x[filter])
+def sort_lst(lst, filter_):
+    """Sorts that list of dicts by given filter"""
+    return sorted(lst, key=lambda x: x[filter_])
 
 def create_excel_file(data, f_name):
+    """Creates an excel file and writes all data here"""
     workbook = xlsxwriter.Workbook(f_name)
     worksheet = workbook.add_worksheet()
-    
     bold_yellow_bg = workbook.add_format({
         'bold': True,
         'bg_color': 'yellow',
@@ -59,10 +71,13 @@ def create_excel_file(data, f_name):
     workbook.close()
 
 def get_args():
-    parser = argparse.ArgumentParser(description='Input, output files and also you can add by what do you wanna filter your data')
+    """Gets all arguments during runtime"""
+    parser = argparse.ArgumentParser(description=\
+            'Input, output files and also you can add by what do you wanna filter your data')
     parser.add_argument('-f', '--input-file', required=True, help='Input file name')
     parser.add_argument('-o', '--output-file', required=True, help='Output file name')
-    parser.add_argument('filter', nargs='?', default='name', choices=['name', 'surname', 'age', 'profession'],  help='Filter by what(default=name)')
+    parser.add_argument('filter', nargs='?', default='name',\
+            choices=['name', 'surname', 'age', 'profession'],  help='Filter by what(default=name)')
     args = parser.parse_args()
     input_file = args.input_file
     output_file = args.output_file
@@ -70,10 +85,11 @@ def get_args():
     return [input_file, output_file, filter_]
 
 def convert_to_website(filename):
-    x = pandas.read_excel(filename)
-    table = x.to_html(index=False)
+    """Converts that excel file to website"""
+    file_r= pandas.read_excel(filename)
+    table = file_r.to_html(index=False)
     html_filename = 'index.html'
-    with open(html_filename, 'w') as html:
+    with open(html_filename, 'w', encoding='utf-8') as html:
         html.write(table)
     current_dir = os.getcwd()
     quest = input('Do you wanna see the website?:')
@@ -81,9 +97,10 @@ def convert_to_website(filename):
         webbrowser.open(current_dir + '/index.html')
 
 def main():
+    """All functions here"""
     args = get_args()
     data_file = args[0]
-    excel_file = args[1] 
+    excel_file = args[1]
     filter_by_what = args[2]
     check_file_existence(data_file)
     data = open_data(data_file)
