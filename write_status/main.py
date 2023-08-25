@@ -17,7 +17,7 @@ def check_dir_existence(dir_name):
 
 def check_file_existence(filename):
     """
-    Check if the specified file exists.
+    Checks if the specified file exists.
     Args:
         filename (str): The name of the file to check.
     """
