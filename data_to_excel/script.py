@@ -13,6 +13,8 @@ import sys
 import xlsxwriter
 import pandas
 
+def check_subpocess():
+
 def check_file_existence(fname):
     """ Checks file exists or not"""
     if not os.path.isfile(fname):
@@ -20,10 +22,14 @@ def check_file_existence(fname):
         sys.exit()
 
 def open_data(filename):
-    """Opens data.txt and returns all lines in list"""
-    with open(filename, encoding='utf-8') as file:
-        return file.readlines()
-    file.close()
+    try:
+        """Opens data.txt and returns all lines in list"""
+        with open(filename, encoding='utf-8') as file:
+            return file.readlines()
+        file.close()
+    except:
+        print(f'Your file does not exist: {filename}. Please check.')
+        sys.exit()
 
 def create_list_of_dct(filename):
     """Gets that list and creates a list of dictionaries"""
@@ -43,32 +49,36 @@ def sort_lst(lst, filter_):
     return sorted(lst, key=lambda x: x[filter_])
 
 def create_excel_file(data, f_name):
-    """Creates an excel file and writes all data here"""
-    workbook = xlsxwriter.Workbook(f_name)
-    worksheet = workbook.add_worksheet()
-    bold_yellow_bg = workbook.add_format({
-        'bold': True,
-        'bg_color': 'yellow',
-        'align': 'center',
-        'valign': 'vcenter'
-        })
-    green_bg = workbook.add_format({'bg_color': 'green'})
-    for i in range(4):
-        worksheet.set_column(i, i, 15)  # Column 0 (A) width set to 15
-    worksheet.write(0, 0, 'Name', bold_yellow_bg)
-    worksheet.write(0, 1, 'Surname', bold_yellow_bg)
-    worksheet.write(0, 2, 'Age', bold_yellow_bg)
-    worksheet.write(0, 3, 'Profession', bold_yellow_bg)
-    row = 1
-    keys = ['name', 'surname', 'age', 'profession']
-    for i in data:
-        for j in range(len(i)):
-            if int(i['age']) > 35:
-                worksheet.write(row, j, i[keys[j]], green_bg)
-            else:
-                worksheet.write(row, j, i[keys[j]])
-        row += 1
-    workbook.close()
+    try:
+    
+        """Creates an excel file and writes all data here"""
+        workbook = xlsxwriter.Workbook(f_name)
+        worksheet = workbook.add_worksheet()
+        bold_yellow_bg = workbook.add_format({
+            'bold': True,
+            'bg_color': 'yellow',
+            'align': 'center',
+            'valign': 'vcenter'
+            })
+        green_bg = workbook.add_format({'bg_color': 'green'})
+        for i in range(4):
+            worksheet.set_column(i, i, 15)  # Column 0 (A) width set to 15
+        worksheet.write(0, 0, 'Name', bold_yellow_bg)
+        worksheet.write(0, 1, 'Surname', bold_yellow_bg)
+        worksheet.write(0, 2, 'Age', bold_yellow_bg)
+        worksheet.write(0, 3, 'Profession', bold_yellow_bg)
+        row = 1
+        keys = ['name', 'surname', 'age', 'profession']
+        for i in data:
+            for j in range(len(i)):
+                if int(i['age']) > 35:
+                    worksheet.write(row, j, i[keys[j]], green_bg)
+                else:
+                    worksheet.write(row, j, i[keys[j]])
+            row += 1
+        workbook.close()
+    except:
+        print("")
 
 def get_args():
     """Gets all arguments during runtime"""
