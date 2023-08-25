@@ -1,4 +1,4 @@
-dct1 = {"a": 1, "b": 88, "c": 489}
+dct1 = {"a": 1, "b": 8, "c": 489}
 dct2 = {"k": 2,  "a": 67, "c":10}
 new_dct= {}
 for k, v in dct1.items():
