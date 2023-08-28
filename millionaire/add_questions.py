@@ -22,7 +22,7 @@ def add_line():
 def return_lines(filename):
     """returns all questions that exist"""
     try:
-        with open(filename, encode='utf-8') as file:
+        with open(filename, encoding='utf-8') as file:
             return file.readlines()
     except FileExistsError:
         print("There's no such a file. Please check")
@@ -36,17 +36,20 @@ def check_qst_existence(lst, line):
 def file_append(file, line):
     """writes the new question in the file"""
     try:
-        with open(file, 'a', encode='utf-8') as fl:
-            fl.write(line+'\n')
-    except:
+        with open(file, 'a', encoding='utf-8'):
+            file.write(line+'\n')
+    except FileExistsError:
         print("Your file does not exist. Please check")
         sys.exit()
 def main():
     """asks for adding and does appropriate functions"""
     if ask():
+        filename = 'qst.txt'
         mstr = add_line()
-        if check_qst_existence(return_lines("qst.txt"), mstr):
-            file_append('qst.txt', mstr)
+        if check_qst_existence(return_lines(filename), mstr):
+            file_append(filename, mstr)
         else:
             print('sorry, same question already exists')
+    else:
+        print("ok.")
 main()
